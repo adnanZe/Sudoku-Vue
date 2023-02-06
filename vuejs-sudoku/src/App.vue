@@ -1,26 +1,31 @@
 <template>
   <div>
-    <h1>{{ title }}</h1>
-    <p>{{ greeting() }}</p>
+    <app-header></app-header>
+    <sudoku></sudoku>
+    <app-footer></app-footer>
   </div>
 </template>
 
 <script>
+import Header from "./components/header.vue";
+import Footer from "./components/footer.vue";
+import Sudoku from "./components/sudoku.vue";
+
 export default {
-  data () {
-    return {
-      title: 'fist vue file!'
-    }
+  components: {
+    "app-header": Header,
+    "app-footer": Footer,
+    sudoku: Sudoku
   },
 
-  methods: {
-    greeting: function() {
-      return 'heey'
-    }
+  data() {
+    return {};
   }
-}
+};
 </script>
 
 <style>
-
+body {
+  margin: 0;
+}
 </style>
