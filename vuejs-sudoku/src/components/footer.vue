@@ -1,7 +1,7 @@
 <template>
   <footer>
     <a href="">
-      <i className="fa-brands fa-github"></i>
+      <i class="fa-brands fa-github"></i>
       {{ seeCode }}
     </a>
   </footer>
