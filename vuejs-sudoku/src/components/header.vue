@@ -11,17 +11,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-header {
-  background-color: #0072e3;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0.5rem 0;
-}
-
-img {
-  height: 40px;
-}
-</style>

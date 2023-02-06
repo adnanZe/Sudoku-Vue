@@ -1,31 +1,21 @@
 <template>
-  <main></main>
+  <main>
+    <grid></grid>
+    <commands></commands>
+  </main>
 </template>
 
 <script>
+import grid from "./sudoku/grid.vue";
+import commands from "./sudoku/commands.vue";
+
 export default {
+  components: {
+    grid,
+    commands
+  },
   data() {
     return {};
   }
 };
 </script>
-
-<style scoped>
-main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
-@media only screen and (min-width: 992px) {
-  main {
-    flex-direction: row;
-  }
-  .timer {
-    height: auto;
-    align-self: flex-start;
-    transform: translateX(-175px);
-  }
-}
-</style>
