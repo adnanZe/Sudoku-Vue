@@ -1,6 +1,6 @@
 <template>
   <footer>
-    <a href="">
+    <a v-bind:href="website" target="_blank">
       <i class="fa-brands fa-github"></i>
       {{ seeCode }}
     </a>
@@ -11,7 +11,8 @@
 export default {
   data() {
     return {
-      seeCode: "see my code"
+      seeCode: "see my code",
+      website: "https://github.com/adnanZe/Sudoku-Vue"
     };
   }
 };
