@@ -67,7 +67,7 @@ header > img {
   color: #0072e3;
 }
 
-.sudoku > div.display-notes {
+.sudoku > div.displayNotes {
   background-color: white;
   display: grid;
   grid-template-columns: repeat(3, 3vw);
@@ -87,7 +87,7 @@ header > img {
 .sudoku > div.associated {
   background-color: #e2ebf3;
 }
-.sudoku > div.match-number {
+.sudoku > div.matchNumber {
   background-color: #c3d7ea;
 }
 .sudoku > div.active {
@@ -259,7 +259,7 @@ footer > a {
     font-size: 3rem;
   }
 
-  .sudoku > div.display-notes {
+  .sudoku > div.displayNotes {
     grid-template-columns: repeat(3, 19px);
     grid-template-rows: repeat(3, 19px);
   }

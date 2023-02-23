@@ -12,7 +12,11 @@
     <button class="notes" id="notes">
       <i class="fa-solid fa-pencil"></i>
     </button>
-    <button v-for="number in numPad" class="number">
+    <button
+      v-for="number in numPad"
+      class="number"
+      v-on:click="onAddNumber(number)"
+    >
       {{ number }}
     </button>
   </section>
@@ -25,6 +29,11 @@ export default {
       newGame: "New Game",
       numPad: [1, 2, 3, 4, 5, 6, 7, 8, 9]
     };
+  },
+  methods: {
+    onAddNumber: function(number) {
+      this.$emit("onAddNumber", number);
+    }
   }
 };
 </script>

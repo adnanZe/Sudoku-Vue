@@ -1,6 +1,17 @@
 <template>
   <section class="sudoku">
-    <div v-for="cell in cells" v-on:click="">
+    <div
+      v-for="cell in cells"
+      v-on:click="onCell(cell)"
+      v-bind:class="{
+        generated: cell.isReadOnly,
+        active: cell.isSelected,
+        associated: cell.isAssociated,
+        matchNumber: cell.isMatchValue,
+        displayNotes: Array.isArray(cell.value),
+        wrong: cell.isWrongValue
+      }"
+    >
       {{ cell.value }}
     </div>
   </section>
@@ -13,8 +24,8 @@ export default {
     return {};
   },
   methods: {
-    onCell: function() {
-      console.log("hit");
+    onCell: function(selectedCell) {
+      this.$emit("onSelectCell", selectedCell);
     }
   }
 };

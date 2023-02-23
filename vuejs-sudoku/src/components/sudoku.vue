@@ -1,14 +1,17 @@
 <template>
   <main>
-    <grid v-bind:cells="cells"></grid>
-    <commands></commands>
+    <grid v-bind:cells="cells" v-on:onSelectCell="onSelectCell($event)"></grid>
+    <commands v-on:onAddNumber="onAddNumber($event)"></commands>
   </main>
 </template>
 
 <script>
 import grid from "./sudoku/grid.vue";
 import commands from "./sudoku/commands.vue";
-import { makepuzzle as generateNumbers } from "sudoku";
+import {
+  generateSudokuCells,
+  getIsMatchedNumber
+} from "../services/sudokuService";
 
 export default {
   components: {
@@ -17,23 +20,70 @@ export default {
   },
   data() {
     return {
-      cells: this.generateSudokuCells()
+      cells: null
     };
   },
   methods: {
-    generateSudokuCells() {
-      const rawNumbers = generateNumbers();
+    onAddNumber(number) {
+      let selectedCell = this.getSelectedCell();
 
-      const gameState = rawNumbers.map((number, index) => {
-        let value = number == null ? "" : `${number + 1}`;
+      if (selectedCell.isReadOnly) return;
 
-        return {
-          value
-        };
+      this.addNumber(selectedCell, number);
+      this.updateMatchedNumber(selectedCell);
+    },
+
+    onSelectCell(selectedCell) {
+      this.updateSelectedCell(selectedCell);
+      this.updateAssociatedIds(selectedCell);
+      this.updateMatchedNumber(selectedCell);
+    },
+
+    getSelectedCell() {
+      return this.cells.find(cell => cell.isSelected === true);
+    },
+
+    addNumber(selectedCell, number) {
+      this.cells.map(cell => {
+        if (cell.id === selectedCell.id) {
+          return (cell.value = number);
+        }
       });
+    },
 
-      return gameState;
+    updateMatchedNumber(selectedCell) {
+      this.cells.map(cell => {
+        cell.isMatchValue = getIsMatchedNumber(cell.value, selectedCell.value);
+      });
+    },
+
+    updateSelectedCell(selectedCell) {
+      this.cells.map(cell => {
+        return (cell.isSelected = selectedCell.id == cell.id ? true : false);
+      });
+    },
+
+    updateAssociatedIds(selectedCell) {
+      this.cells.map(cell => {
+        if (cell.associatedIds.includes(selectedCell.id)) {
+          cell.isAssociated = true;
+        } else {
+          cell.isAssociated = false;
+        }
+      });
     }
+  },
+
+  created() {
+    this.cells = generateSudokuCells();
+
+    this.cells.map(cell => {
+      if (cell.associatedIds.includes("0")) {
+        cell.isAssociated = true;
+      } else {
+        cell.isAssociated = false;
+      }
+    });
   }
 };
 </script>
