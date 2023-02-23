@@ -1,7 +1,11 @@
 <template>
   <main>
     <grid v-bind:cells="cells" v-on:onSelectCell="onSelectCell($event)"></grid>
-    <commands v-on:onAddNumber="onAddNumber($event)"></commands>
+    <commands
+      v-on:onAddNumber="onAddNumber($event)"
+      v-on:onNotes:="onNotes()"
+      v-bind:isActiveNotes="isActiveNotes"
+    ></commands>
   </main>
 </template>
 
@@ -20,10 +24,15 @@ export default {
   },
   data() {
     return {
-      cells: null
+      cells: [],
+      isActiveNotes: false
     };
   },
   methods: {
+    onNotes() {
+      console.log("hit");
+    },
+
     onAddNumber(number) {
       let selectedCell = this.getSelectedCell();
 
@@ -75,10 +84,11 @@ export default {
   },
 
   created() {
+    const indexFirstElementSelected = "0";
     this.cells = generateSudokuCells();
 
     this.cells.map(cell => {
-      if (cell.associatedIds.includes("0")) {
+      if (cell.associatedIds.includes(indexFirstElementSelected)) {
         cell.isAssociated = true;
       } else {
         cell.isAssociated = false;

@@ -9,7 +9,7 @@
     <button id="erase" class="erase">
       <i class="fa-solid fa-eraser"></i>
     </button>
-    <button class="notes" id="notes">
+    <button class="notes" id="notes" v-on:click="onNotes(isActiveNotes)">
       <i class="fa-solid fa-pencil"></i>
     </button>
     <button
@@ -24,6 +24,7 @@
 
 <script>
 export default {
+  props: ["isActiveNotes"],
   data() {
     return {
       newGame: "New Game",
@@ -31,8 +32,12 @@ export default {
     };
   },
   methods: {
-    onAddNumber: function(number) {
+    onAddNumber(number) {
       this.$emit("onAddNumber", number);
+    },
+    onNotes(isActiveNotes) {
+      isActiveNotes = true ? false : true;
+      console.log(isActiveNotes);
     }
   }
 };
