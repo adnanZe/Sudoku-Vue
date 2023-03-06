@@ -1,10 +1,10 @@
 <template>
   <main>
-    <grid v-bind:cells="cells" v-on:onSelectCell="onSelectCell($event)"></grid>
+    <grid :cells="cells" v-on:onSelectCell="onSelectCell($event)"></grid>
     <commands
       v-on:onAddNumber="onAddNumber($event)"
-      v-on:onNotes:="onNotes()"
-      v-bind:isActiveNotes="isActiveNotes"
+      :isActiveNotes="isActiveNotes"
+      @update-isActiveNotes="onNotes"
     ></commands>
   </main>
 </template>
@@ -29,8 +29,8 @@ export default {
     };
   },
   methods: {
-    onNotes() {
-      console.log("hit");
+    onNotes(isActive) {
+      this.isActiveNotes = isActive;
     },
 
     onAddNumber(number) {
