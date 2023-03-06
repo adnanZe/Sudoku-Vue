@@ -5,6 +5,8 @@
       v-on:onAddNumber="onAddNumber($event)"
       :isActiveNotes="isActiveNotes"
       @update-isActiveNotes="onNotes"
+      :onErase="onErase"
+      :onUndo="onUndo"
     ></commands>
   </main>
 </template>
@@ -29,6 +31,17 @@ export default {
     };
   },
   methods: {
+    onUndo() {},
+
+    onErase() {
+      let selectedCell = this.getSelectedCell();
+
+      if (selectedCell.isReadOnly) return;
+
+      this.eraseNumber(selectedCell);
+      this.updateMatchedNumber(selectedCell);
+    },
+
     onNotes(isActive) {
       this.isActiveNotes = isActive;
     },
@@ -50,6 +63,14 @@ export default {
 
     getSelectedCell() {
       return this.cells.find(cell => cell.isSelected === true);
+    },
+
+    eraseNumber(selectedCell) {
+      this.cells.map(cell => {
+        if (cell.id === selectedCell.id) {
+          return (cell.value = "");
+        }
+      });
     },
 
     addNumber(selectedCell, number) {

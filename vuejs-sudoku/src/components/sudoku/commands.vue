@@ -3,10 +3,10 @@
     <button id="new-game" class="new-game">
       {{ newGame }}
     </button>
-    <button id="undo" class="undo">
+    <button id="undo" class="undo" v-on:click="onUndo">
       <i class="fa-solid fa-rotate-left"></i>
     </button>
-    <button id="erase" class="erase">
+    <button id="erase" class="erase" v-on:click="onErase">
       <i class="fa-solid fa-eraser"></i>
     </button>
     <button
@@ -32,6 +32,12 @@ export default {
   props: {
     isActiveNotes: {
       type: Boolean,
+      required: true
+    },
+    onErase: {
+      required: true
+    },
+    onUndo: {
       required: true
     }
   },
