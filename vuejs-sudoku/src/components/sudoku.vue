@@ -9,12 +9,14 @@
       :onUndo="onUndo"
       :onNewGame="onNewGame"
     ></commands>
+    <timer></timer>
   </main>
 </template>
 
 <script>
 import grid from "./sudoku/grid.vue";
 import commands from "./sudoku/commands.vue";
+import timer from "./sudoku/timer.vue";
 import {
   generateSudokuCells,
   getIsMatchedNumber
@@ -23,7 +25,8 @@ import {
 export default {
   components: {
     grid,
-    commands
+    commands,
+    timer
   },
   data() {
     return {
@@ -45,15 +48,8 @@ export default {
         cell => cell.id === latestUpdate.id
       );
 
-      if (
-        Array.isArray(latestUpdate.value) &&
-        Array.isArray(cellToUpdate[0].value)
-      ) {
-        let diffValue = cellToUpdate[0].value.filter(
-          val => !latestUpdate.value.includes(val)
-        );
-
-        this.addNumberInNotes(latestUpdate, diffValue[0]);
+      if (Array.isArray(latestUpdate.value)) {
+        cellToUpdate[0].value = latestUpdate.value;
       } else {
         this.addNumber(latestUpdate, latestUpdate.value);
       }
@@ -61,6 +57,7 @@ export default {
       this.updateSelectedCell(latestUpdate);
       this.updateMatchedNumber(latestUpdate);
       this.updateAssociatedIds(latestUpdate);
+      this.checkWrongCells();
 
       this.history.pop();
     },
@@ -70,6 +67,7 @@ export default {
 
       if (selectedCell.isReadOnly) return;
 
+      this.selectedCell.isWrongValue = false;
       this.eraseNumber(selectedCell);
       this.updateMatchedNumber(selectedCell);
     },
@@ -92,6 +90,7 @@ export default {
       }
 
       this.updateMatchedNumber(selectedCell);
+      this.checkWrongCells();
     },
 
     onSelectCell(selectedCell) {
@@ -124,7 +123,7 @@ export default {
         selectedCell.value = Array(9).fill("");
       }
 
-      if (selectedCell.value[Number(value) - 1] === value) {
+      if (selectedCell.value[Number(value) - 1] == value) {
         this.$set(selectedCell.value, Number(value) - 1, "");
       } else {
         this.$set(selectedCell.value, Number(value) - 1, value);
@@ -158,6 +157,23 @@ export default {
         } else {
           cell.isAssociated = false;
         }
+      });
+    },
+
+    checkWrongCells() {
+      this.cells.map(cell => {
+        cell.isWrongValue = false;
+        this.cells.map(cellToCompare => {
+          if (
+            cell.value == cellToCompare.value &&
+            cell.value &&
+            cellToCompare.value &&
+            cell.id !== cellToCompare.id &&
+            cellToCompare.associatedIds.includes(cell.id)
+          ) {
+            cell.isWrongValue = true;
+          }
+        });
       });
     },
 
