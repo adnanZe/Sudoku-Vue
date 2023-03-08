@@ -1,6 +1,6 @@
 <template>
   <section class="action-controls">
-    <button id="new-game" class="new-game">
+    <button id="new-game" class="new-game" v-on:click="onNewGame">
       {{ newGame }}
     </button>
     <button id="undo" class="undo" v-on:click="onUndo">
@@ -38,6 +38,9 @@ export default {
       required: true
     },
     onUndo: {
+      required: true
+    },
+    onNewGame: {
       required: true
     }
   },

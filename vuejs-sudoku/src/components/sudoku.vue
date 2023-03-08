@@ -4,9 +4,10 @@
     <commands
       v-on:onAddNumber="onAddNumber($event)"
       :isActiveNotes="isActiveNotes"
-      @update-isActiveNotes="onNotes"
+      v-on:update-isActiveNotes="onNotes"
       :onErase="onErase"
       :onUndo="onUndo"
+      :onNewGame="onNewGame"
     ></commands>
   </main>
 </template>
@@ -27,11 +28,42 @@ export default {
   data() {
     return {
       cells: [],
-      isActiveNotes: false
+      isActiveNotes: false,
+      history: []
     };
   },
   methods: {
-    onUndo() {},
+    onNewGame() {
+      this.createGame();
+    },
+
+    onUndo() {
+      if (!this.history.length) return;
+
+      const latestUpdate = this.history[this.history.length - 1];
+      const cellToUpdate = this.cells.filter(
+        cell => cell.id === latestUpdate.id
+      );
+
+      if (
+        Array.isArray(latestUpdate.value) &&
+        Array.isArray(cellToUpdate[0].value)
+      ) {
+        let diffValue = cellToUpdate[0].value.filter(
+          val => !latestUpdate.value.includes(val)
+        );
+
+        this.addNumberInNotes(latestUpdate, diffValue[0]);
+      } else {
+        this.addNumber(latestUpdate, latestUpdate.value);
+      }
+
+      this.updateSelectedCell(latestUpdate);
+      this.updateMatchedNumber(latestUpdate);
+      this.updateAssociatedIds(latestUpdate);
+
+      this.history.pop();
+    },
 
     onErase() {
       let selectedCell = this.getSelectedCell();
@@ -47,11 +79,18 @@ export default {
     },
 
     onAddNumber(number) {
-      let selectedCell = this.getSelectedCell();
+      const selectedCell = this.getSelectedCell();
 
       if (selectedCell.isReadOnly) return;
 
-      this.addNumber(selectedCell, number);
+      this.addInHistory(selectedCell);
+
+      if (this.isActiveNotes) {
+        this.addNumberInNotes(selectedCell, number);
+      } else {
+        this.addNumber(selectedCell, number);
+      }
+
       this.updateMatchedNumber(selectedCell);
     },
 
@@ -65,12 +104,31 @@ export default {
       return this.cells.find(cell => cell.isSelected === true);
     },
 
+    addInHistory(selectedCell) {
+      this.history.push({
+        ...selectedCell,
+        value: JSON.parse(JSON.stringify(selectedCell.value))
+      });
+    },
+
     eraseNumber(selectedCell) {
       this.cells.map(cell => {
         if (cell.id === selectedCell.id) {
           return (cell.value = "");
         }
       });
+    },
+
+    addNumberInNotes(selectedCell, value) {
+      if (!Array.isArray(selectedCell.value)) {
+        selectedCell.value = Array(9).fill("");
+      }
+
+      if (selectedCell.value[Number(value) - 1] === value) {
+        this.$set(selectedCell.value, Number(value) - 1, "");
+      } else {
+        this.$set(selectedCell.value, Number(value) - 1, value);
+      }
     },
 
     addNumber(selectedCell, number) {
@@ -101,20 +159,24 @@ export default {
           cell.isAssociated = false;
         }
       });
+    },
+
+    createGame() {
+      const indexFirstElementSelected = "0";
+      this.cells = generateSudokuCells();
+
+      this.cells.map(cell => {
+        if (cell.associatedIds.includes(indexFirstElementSelected)) {
+          cell.isAssociated = true;
+        } else {
+          cell.isAssociated = false;
+        }
+      });
     }
   },
 
   created() {
-    const indexFirstElementSelected = "0";
-    this.cells = generateSudokuCells();
-
-    this.cells.map(cell => {
-      if (cell.associatedIds.includes(indexFirstElementSelected)) {
-        cell.isAssociated = true;
-      } else {
-        cell.isAssociated = false;
-      }
-    });
+    this.createGame();
   }
 };
 </script>

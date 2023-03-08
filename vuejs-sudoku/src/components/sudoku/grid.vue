@@ -12,7 +12,11 @@
         wrong: cell.isWrongValue
       }"
     >
-      {{ cell.value }}
+      <span v-if="Array.isArray(cell.value)" v-for="cellNotes in cell.value">{{
+        cellNotes
+      }}</span>
+
+      <p v-if="!Array.isArray(cell.value)">{{ cell.value }}</p>
     </div>
   </section>
 </template>
